@@ -14,16 +14,21 @@ import pandas
 my_fruit_list = pandas.read_csv("https://uni-lab-files.s3.us-west-2.amazonaws.com/dabw/fruit_macros.txt")
 my_fruit_list = my_fruit_list.set_index('Fruit')
 
-#Added pick list so fruits can be choosen
+# Added pick list so fruits can be choosen
 fruits_selected = streamlit.multiselect("Pick some fruits:", list(my_fruit_list.index), ['Avocado', 'Strawberries'])
 fruits_to_show = my_fruit_list.loc[fruits_selected]
 
-#Display the table
+# Display the table
 streamlit.dataframe(fruits_to_show)
 
-#New section to display Fruityvice api response
+# New section to display Fruityvice api response
 streamlit.header('Fruityvice Fruit Advice!')
 
 import requests
 fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-streamlit.text(fruityvice_response.json())
+streamlit.text(fruityvice_response.json()) # writes JSON data to screen
+
+# Normalises JSON response
+fruityvice_normalised = pandas.json_normalize(fruityvice_response.json())
+# Output as a table
+streamlit.dataframe(fruityvice_normalised)
